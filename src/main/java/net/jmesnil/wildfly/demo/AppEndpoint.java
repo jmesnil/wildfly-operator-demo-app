@@ -35,7 +35,7 @@ public class AppEndpoint {
     @GET
     @Produces({ "application/json" })
     public String getIPAddress() {
-        String text = "{\"text\":\"" + greetings + ", World!" + "\"}";
+        String text = "{\"text\":\"" + (greetings + ", World!").toUpperCase() + "\"}";
         return text;
     }
 }
