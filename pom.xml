@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -29,8 +29,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <version.server.bom>21.0.0.Final</version.server.bom>
-    <version.microprofile.bom>21.0.0.Final</version.microprofile.bom>
+    <version.wildfly>22.0.0.Final</version.wildfly>
   </properties>
 
   <dependencyManagement>
@@ -39,7 +38,7 @@
       <dependency>
         <groupId>org.wildfly.bom</groupId>
         <artifactId>wildfly-jakartaee8-with-tools</artifactId>
-        <version>${version.server.bom}</version>
+        <version>${version.wildfly}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -47,7 +46,7 @@
       <dependency>
         <groupId>org.wildfly.bom</groupId>
         <artifactId>wildfly-microprofile</artifactId>
-        <version>${version.microprofile.bom}</version>
+        <version>${version.wildfly}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -89,4 +88,40 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>bootable-jar</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.wildfly.plugins</groupId>
+            <artifactId>wildfly-jar-maven-plugin</artifactId>
+            <configuration>
+              <feature-pack-location>wildfly@maven(org.jboss.universe:community-universe)#${version.wildfly}</feature-pack-location>
+              <layers>
+                <layer>jaxrs</layer>
+                <layer>microprofile-platform</layer>
+              </layers>
+              <cloud />
+              <excluded-layers>
+                <layer>deployment-scanner</layer>
+              </excluded-layers>
+              <plugin-options>
+                <jboss-fork-embedded>true</jboss-fork-embedded>
+              </plugin-options>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>package</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
