@@ -6,7 +6,7 @@ env:
   REGISTRY: quay.io/${{ secrets.REGISTRY_NAMESPACE }}/
   REGISTRY_USER: ${{ secrets.REGISTRY_USER }}
   REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
-  IMAGE_NAME: ${REGISTRY}my-wildfly-app'
+  IMAGE_NAME: ${REGISTRY}my-wildfly-app
 
 # Controls when the action will run. 
 on:
