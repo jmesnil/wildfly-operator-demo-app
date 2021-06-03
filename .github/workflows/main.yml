@@ -2,6 +2,12 @@
 
 name: CI
 
+env:
+  REGISTRY: quay.io/${{ secrets.REGISTRY_NAMESPACE }}/
+  REGISTRY_USER: ${{ secrets.REGISTRY_USER }}
+  REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+  IMAGE_NAME: ${{ env.REGISTRY }}my-wildfly-app'
+
 # Controls when the action will run. 
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
@@ -28,7 +34,15 @@ jobs:
       - name: Build image
         uses: bigloupe/buildpacks-action@master
         with:
-          image: 'my-wildfly-app'
+          image: ${{ env.IMAGE_NAME }}
           path: '.'
           builder: 'quay.io/jmesnil/wildfly-builder'
-  
+      - name: Docker Login to Quay.io
+        uses: docker/login-action@v1.9.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ env.REGISTRY_PASSWORD }}
+      - name: Push Images To Registry
+        run: |-
+         docker push ${{ env.IMAGE_NAME }}
